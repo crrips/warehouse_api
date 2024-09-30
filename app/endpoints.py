@@ -56,7 +56,7 @@ def delete_product(id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/orders")
-def create_order(order_id: int, product_id: int, product_amount: int, db: Session = Depends(get_db)):
+def create_order(product_id: int, product_amount: int, db: Session = Depends(get_db)):
     cur_amount = db.query(Product).filter(Product.id == product_id).first().amount
     
     try:
@@ -71,6 +71,7 @@ def create_order(order_id: int, product_id: int, product_amount: int, db: Sessio
     db.commit()
     db.refresh(order)
     
+    order_id = order.id
     orderItem = OrderItem(order_id=order_id, product_id=product_id, product_amount=product_amount)
     db.add(orderItem)
     db.commit()
